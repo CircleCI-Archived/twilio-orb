@@ -1,0 +1,70 @@
+---
+version: 2.1
+
+orbs:
+  twilio: circleci/twilio@volatile
+
+executors:
+  cli:
+    docker:
+      - image: circleci/circleci-cli:latest
+
+jobs:
+  lint:
+    docker:
+      - image: singapore/lint-condo
+    steps:
+      - checkout
+      - run: yamllint -d relaxed .
+
+  validate:
+    executor: cli
+    steps:
+      - checkout
+      - run: circleci orb validate src/@orb.yml
+  sendsms:
+    docker:
+      - image: circleci/node
+    steps:
+      - run: exit 0     # toggle this to force success or status for testing
+      - twilio/sendsms
+  sendsmsalert:
+    docker:
+      - image: circleci/node
+    steps:
+      - run: exit 2     # toggle this to force success or status for testing
+      - twilio/alert
+  publish-dev:
+    executor: cli
+    steps:
+      - checkout
+      - run: circleci orb publish src/@orb.yml circleci/twilio@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
+  promote-prod:
+    executor: cli
+    steps:
+      - checkout
+      - run: circleci orb publish promote circleci/twilio@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 patch --token $CIRCLE_TOKEN
+
+workflows:
+  validate-test-deploy:
+    jobs:
+      - lint
+      - validate:
+          requires:
+            - lint
+      - sendsms:
+          requires:
+            - validate
+      - sendsmsalert:
+          requires:
+            - validate
+      - publish-dev:
+          requires:
+            - sendsms
+      - promote-prod:
+          requires:
+            - publish-dev
+          filters:
+            branches:
+              only: master
+          context: orb-publishing
