@@ -61,7 +61,7 @@ commands:
       body:
         description: The Body parameter includes the full text of the message you want to send, limited to 1600 characters.
         type: string
-        default: "Notification from CircleCI. A critical test is failed."
+        default: "Notification from CircleCI. A critical test has failed."
       sid:
         description:
         type: string
