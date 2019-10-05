@@ -1,0 +1,15 @@
+description: "Send a text message with a custom message."
+usage:
+  version: 2.1
+  orbs:
+    twililo: circleci/twililo@volatile
+    jobs:
+      build:
+        docker:
+          - image: <docker image>
+        steps:
+          - twilio/sendsms:
+              body: "This is a custom message notification" # Optional: Enter your own message
+              from: "+16175551212" # Optional: Enter custom 'from' or set 'TWILIO_FROM' Env var. Format this number with a '+' and a country code.
+              to: "+16175551212" # Optional: Enter custom 'from' or set 'TWILIO_TO' Env var. Format this number with a '+' and a country code.
+              # Set your 'TWILIO_SID' and 'TWILIO_TOKEN' environtment variables for security.

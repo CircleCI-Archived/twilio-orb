@@ -21,7 +21,7 @@ jobs:
     executor: cli
     steps:
       - checkout
-      - run: circleci orb validate src/@orb.yml
+      - run: circleci config pack src | circleci orb validate -
   sendsms:
     docker:
       - image: circleci/node
@@ -38,7 +38,7 @@ jobs:
     executor: cli
     steps:
       - checkout
-      - run: circleci orb publish src/@orb.yml circleci/twilio@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
+      - run: circleci config pack src | circleci orb publish - circleci/twilio@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
   promote-prod:
     executor: cli
     steps:
