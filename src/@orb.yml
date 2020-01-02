@@ -12,13 +12,13 @@ commands:
     parameters:
       from:
         description: >
-          This must be a Twilio phone number that you own, formatted with a '+' and country code, \
+          This must be a Twilio phone number that you own, formatted with a '+' and country code,
            e.g. +16175551212 (E.164 format). You can also use a Messaging Service SID.
         type: string
         default: ${TWILIO_FROM}
       to:
         description: >
-          This parameter determines the destination phone number for your SMS message. \
+          This parameter determines the destination phone number for your SMS message.
           Format this number with a '+' and a country code, e.g., +16175551212 (E.164 format).
         type: string
         default: ${TWILIO_TO}
@@ -48,13 +48,13 @@ commands:
     parameters:
       from:
         description: >
-          This must be a Twilio phone number that you own, formatted with a '+' and country code, \
+          This must be a Twilio phone number that you own, formatted with a '+' and country code,
            e.g. +16175551212 (E.164 format). You can also use a Messaging Service SID.
         type: string
         default: ${TWILIO_FROM}
       to:
         description: >
-          This parameter determines the destination phone number for your SMS message. \
+          This parameter determines the destination phone number for your SMS message.
           Format this number with a '+' and a country code, e.g., +16175551212 (E.164 format).
         type: string
         default: ${TWILIO_TO}
