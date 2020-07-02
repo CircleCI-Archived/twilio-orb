@@ -34,7 +34,7 @@ steps:
               --from "<< parameters.from >>" \
               --to "<< parameters.to >>"
           else
-            curl -X POST https://api.twilio.com/2010-04-01/Accounts/<< parameters.sid >>/Messages.json \
+            curl -X POST https://api.twilio.com/2010-04-01/Accounts/${<< parameters.sid >>}/Messages.json \
             --data-urlencode "From=<< parameters.from >>" \
             --data-urlencode "Body=<< parameters.body >>" \
             --data-urlencode "To=<< parameters.to >>" \

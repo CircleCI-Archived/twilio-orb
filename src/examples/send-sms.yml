@@ -12,5 +12,5 @@ usage:
           - twilio/install
           - twilio/sendsms:
               body: "This is a custom message notification"
-              from: "+16175551212"
-              to: "+16175551212"
+              from: "+15005550006"
+              to: "+15005550006"

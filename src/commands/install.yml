@@ -21,7 +21,7 @@ steps:
         if ! type npm > /dev/null; then
           echo "npm is not installed, cannot install the Twilio CLI."
           echo "You can skip this step - commands will default to curl requests."
-          exit 1
+          exit 0
         fi
 
         $SUDO npm i -g twilio-cli@<<parameters.version>>
