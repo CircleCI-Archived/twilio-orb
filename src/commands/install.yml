@@ -13,7 +13,7 @@ steps:
       name: Install Twilio CLI
       command: |
         if [[ $EUID == 0 ]]; then export SUDO=""; else # Check if we're root
-          if cat /etc/issue | grep Alpine > /dev/null 2>&1 || ! [[ -w "<< parameters.install-dir >>" ]]; then
+          if cat /etc/issue | grep Alpine > /dev/null 2>&1; then
             export SUDO="sudo";
           fi
         fi
