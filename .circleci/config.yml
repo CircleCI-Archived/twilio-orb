@@ -28,14 +28,14 @@ jobs:
       - image: cimg/node:14.4
     steps:
       - twilio/install
-      - twilio/notify:
+      - twilio/sendsms:
           to: "+15005550006"
           from: "+15005550006"
   integration-test_notify_no_node:
     docker:
       - image: cimg/base:edge
     steps:
-      - twilio/notify:
+      - twilio/sendsms:
           to: "+15005550006"
           from: "+15005550006"
 
