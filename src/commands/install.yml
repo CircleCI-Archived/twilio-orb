@@ -12,16 +12,16 @@ steps:
   - run:
       name: Install Twilio CLI
       command: |
-        if [[ $EUID == 0 ]]; then export SUDO=""; else # Check if we're root
-          if cat /etc/issue | grep Alpine > /dev/null 2>&1; then
-            export SUDO="sudo";
-          fi
-        fi
-
         if ! type npm > /dev/null; then
           echo "npm is not installed, cannot install the Twilio CLI."
           echo "You can skip this step - commands will default to curl requests."
           exit 0
+        fi
+
+        if [[ $EUID == 0 ]]; then export SUDO=""; else # Check if we're root
+          if ! [[ -w "$(npm root -g)" ]]; then
+            export SUDO="sudo";
+          fi
         fi
 
         $SUDO npm i -g twilio-cli@<<parameters.version>>
