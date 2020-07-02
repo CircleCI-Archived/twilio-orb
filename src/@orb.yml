@@ -1,5 +1,8 @@
 version: 2.1
 description: |
-  Create custom Twilio SMS notifications for CircleCI jobs.
+  Create custom Twilio SMS notifications for CircleCI jobs. Check the linked API docs for further information.
+  Requires "Option 2" environment variables to be created, as detailed here:
+  https://www.twilio.com/docs/twilio-cli/general-usage#want-to-use-environment-variables-instead-of-creating-a-profile
 display:
   source_url: https://github.com/circleci-public/twilio-orb
+  home_url: https://www.twilio.com
