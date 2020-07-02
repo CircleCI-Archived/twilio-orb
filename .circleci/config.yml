@@ -1,70 +1,48 @@
----
 version: 2.1
 
 orbs:
-  twilio: circleci/twilio@volatile
+  twilio: circleci/twilio@<<pipeline.parameters.dev-orb-version>>
+  orb-tools: circleci/orb-tools@9.1
 
-executors:
-  cli:
-    docker:
-      - image: circleci/circleci-cli:latest
-
-jobs:
-  lint:
-    docker:
-      - image: singapore/lint-condo
-    steps:
-      - checkout
-      - run: yamllint -d relaxed .
-
-  validate:
-    executor: cli
-    steps:
-      - checkout
-      - run: circleci orb validate src/@orb.yml
-  sendsms:
-    docker:
-      - image: circleci/node
-    steps:
-      - run: exit 0     # toggle this to force success or status for testing
-      - twilio/sendsms
-  sendsmsalert:
-    docker:
-      - image: circleci/node
-    steps:
-      - run: exit 2     # toggle this to force success or status for testing
-      - twilio/alert
-  publish-dev:
-    executor: cli
-    steps:
-      - checkout
-      - run: circleci orb publish src/@orb.yml circleci/twilio@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
-  promote-prod:
-    executor: cli
-    steps:
-      - checkout
-      - run: circleci orb publish promote circleci/twilio@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 patch --token $CIRCLE_TOKEN
+parameters:
+  run-integration-tests:
+    type: boolean
+    default: false
+  dev-orb-version:
+    type: string
+    default: "dev:alpha"
 
 workflows:
-  validate-test-deploy:
+  lint_pack-validate_publish-dev:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
-      - lint
-      - validate:
+      - orb-tools/lint
+      - orb-tools/pack:
           requires:
-            - lint
-      - sendsms:
+            - orb-tools/lint
+
+      - orb-tools/publish-dev:
+          orb-name: circleci/twilio
           requires:
-            - validate
-      - sendsmsalert:
+            - orb-tools/pack
+
+      - orb-tools/trigger-integration-tests-workflow:
+          name: trigger-integration-dev
           requires:
-            - validate
-      - publish-dev:
-          requires:
-            - sendsms
-      - promote-prod:
-          requires:
-            - publish-dev
+            - orb-tools/publish-dev
+
+  integration-tests_prod-release:
+    when: << pipeline.parameters.run-integration-tests >>
+    jobs:
+      - orb-tools/dev-promote-prod-from-commit-subject:
+          orb-name: circleci/twilio
+          context: orb-publishing
+          add-pr-comment: true
+          bot-token-variable: GHI_TOKEN
+          bot-user: cpe-bot
+          fail-if-semver-not-indicated: true
+          publish-version-tag: true
+          ssh-fingerprints: 93:70:e7:25:2a:52:05:ae:8f:98:5f:03:d7:80:77:e8
           filters:
             branches:
               only: master
-          context: orb-publishing

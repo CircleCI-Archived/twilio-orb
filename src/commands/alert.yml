@@ -1,0 +1,43 @@
+description: Send SMS alert on failure only. This must be the last step in the job to work properly.
+parameters:
+  from:
+    description: >
+      This must be a Twilio phone number that you own, formatted with a '+' and country code,
+        e.g. +16175551212 (E.164 format). You can also use a Messaging Service SID.
+    type: string
+    default: ${TWILIO_FROM}
+  to:
+    description: >
+      This parameter determines the destination phone number for your SMS message.
+      Format this number with a '+' and a country code, e.g., +16175551212 (E.164 format).
+    type: string
+    default: ${TWILIO_TO}
+  body:
+    description: The Body parameter includes the full text of the message you want to send, limited to 1600 characters.
+    type: string
+    default: "Notification from CircleCI. A critical test has failed."
+  sid:
+    description: Twilio account SID.
+    type: string
+    default: TWILIO_ACCOUNT_SID
+  authtoken:
+    description: API authorization token for your Twilio account.
+    type: env_var_name
+    default: TWILIO_AUTH_TOKEN
+steps:
+  - run:
+      name: Sending SMS
+      command: |
+          if type twilio > /dev/null; then
+            twilio api:core:messages:create \
+              --body "<< parameters.body >>" \
+              --from "<< parameters.from >>" \
+              --to "<< parameters.to >>"
+          else
+            curl -X POST https://api.twilio.com/2010-04-01/Accounts/<< parameters.sid >>/Messages.json \
+            --data-urlencode "From=<< parameters.from >>" \
+            --data-urlencode "Body=<< parameters.body >>" \
+            --data-urlencode "To=<< parameters.to >>" \
+            -u ${<< parameters.sid >>}:${<< parameters.authtoken >>}
+          fi
+      when: on_fail
