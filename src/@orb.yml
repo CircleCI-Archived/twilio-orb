@@ -1,3 +1,5 @@
 version: 2.1
 description: |
-  Create custom Twilio SMS notifications for CircleCI jobs
+  Create custom Twilio SMS notifications for CircleCI jobs.
+display:
+  source_url: https://github.com/circleci-public/twilio-orb
