@@ -1,0 +1,16 @@
+description: >
+  Send an SMS with a custom message.
+usage:
+  version: 2.1
+  orbs:
+    twililo: circleci/twilio@x.y.z
+    jobs:
+      build:
+        docker:
+          - image: cimg/base:edge
+        steps:
+          - twilio/install
+          - twilio/sendsms:
+              body: "This is a custom message notification"
+              from: "+15005550006"
+              to: "+15005550006"
