@@ -1,0 +1,27 @@
+description: >
+  Install the Twilio CLI from npm. Requires node - most commands will fall back
+  to using curl requests if the CLI cannot be found.
+
+parameters:
+  version:
+    type: string
+    description: "Version of the Twilio CLI package to install. Defaults to latest."
+    default: "latest"
+
+steps:
+  - run:
+      name: Install Twilio CLI
+      command: |
+        if [[ $EUID == 0 ]]; then export SUDO=""; else # Check if we're root
+          if cat /etc/issue | grep Alpine > /dev/null 2>&1 || ! [[ -w "<< parameters.install-dir >>" ]]; then
+            export SUDO="sudo";
+          fi
+        fi
+
+        if ! type npm > /dev/null; then
+          echo "npm is not installed, cannot install the Twilio CLI."
+          echo "You can skip this step - commands will default to curl requests."
+          exit 1
+        fi
+
+        $SUDO npm i -g twilio-cli@<<parameters.version>>

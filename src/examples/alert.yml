@@ -1,0 +1,16 @@
+description: >
+  This function is the same as the "sendsms" command but will only run when the job has failed. This must be the last step in a job to work properly.
+usage:
+  version: 2.1
+  orbs:
+    twililo: circleci/twilio@volatile
+    jobs:
+      build:
+        docker:
+          - image: cimg/node:14.4.0
+        steps:
+          - twilio/install
+          - twilio/alert:
+              body: "Customize alert message for this job"
+              from: "+16175551212"
+              to: "+16175551212"
